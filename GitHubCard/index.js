@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
@@ -28,7 +30,26 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
+
+followersArray.forEach(person => {
+  axios.get(`https://api.github.com/users/${person}`)
+  .then(response => {
+    let received = response.data
+    const githubCard = githubCardMaker(received)
+    cardDiv.appendChild(githubCard)
+  })
+  .catch(error => {
+    console.log(error)
+    debugger;
+  })
+})
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,7 +70,67 @@ const followersArray = [];
       </div>
     </div>
 */
+function githubCardMaker(data){
 
+const card = document.createElement('div')
+const image = document.createElement('img')
+const info = document.createElement('div')
+const name = document.createElement('h3')
+const username = document.createElement('p')
+const location = document.createElement('p')
+const profile = document.createElement('p')
+const link = document.createElement('a')
+const followers = document.createElement('p')
+const following = document.createElement('p')
+const bio = document.createElement('p')
+
+///////////// APPENDING CHILDREN ///////////
+card.appendChild(image)
+card.appendChild(info)
+info.appendChild(name)
+info.appendChild(username)
+info.appendChild(location)
+info.appendChild(profile)
+profile.appendChild(link)
+info.appendChild(followers)
+info.appendChild(following)
+info.appendChild(bio)
+
+/////////// ADDING CLASSES ///////////
+
+card.classList.add('card')
+info.classList.add('info')
+name.classList.add('name')
+username.classList.add('username')
+
+      ////////// TEXT CONTENT ////////////
+
+image.src = data.avatar_url
+name.textContent = data.name
+username.textContent = data.login
+location.textContent = data.location
+link.textContent = data.html_url
+followers.textContent = `Followers: ${data.followers}`
+following.textContent = `Following: ${data.following}`
+bio.textContent = `Bio: ${data.bio}`
+
+
+return card
+}
+
+const cardDiv = document.querySelector('.cards')
+
+axios.get('https://api.github.com/users/justinalize')
+.then(response => {
+  let received = response.data
+  const newCard = githubCardMaker(received)
+  cardDiv.appendChild(newCard)
+  
+})
+.catch(error => {
+  console.log(error)
+  debugger
+})
 /*
   List of LS Instructors Github username's:
     tetondan
